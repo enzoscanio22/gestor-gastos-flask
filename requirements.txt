@@ -1,2 +1,34 @@
-##          DEPENDENCIAS NECESARIAS
+# ==========================================
+#          DEPENDENCIAS NECESARIAS
+# ==========================================
 
+flask
+
+# ==========================================
+# Se puede colocar la version que se desee para especificar que version se uso:
+
+# requests>=2.30.0
+# numpy>=2.0.0,<3.0.0
+# pandas~=2.2.0
+
+# Los operadores más habituales son:
+# Operador	Significado
+# ==	Versión exacta.
+# >=	Esa versión o una superior.
+# <=	Esa versión o una inferior.
+# !=	Excluye una versión específica.
+# ~=	Permite actualizaciones compatibles.
+
+# ==========================================
+# Existe una manera muy práctica de generar el archivo sin tener que escribir manualmente todas las dependencias
+# Desde la terminal, ejecutá:
+
+# pip freeze > requirements.txt
+
+# ==========================================
+### ESTRUCTURA CON FLASK
+
+## clases
+## funciones
+## datos
+## rutas
