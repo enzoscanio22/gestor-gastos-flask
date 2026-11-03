@@ -1,0 +1,19 @@
+<h1>Hay {{ cantidad }} productos</h1>
+
+{% if items %}
+<ul>
+    {% for nombre, precio in items %}
+      <li>{{ nombre }}: ${{ precio }}</li>
+    {% endfor %}
+</ul>
+
+{% else %}
+  <p>No hay productos todavía.</p>
+{% endif %}
+
+<!-- {{ ... }} imprime el valor de una variable -->
+<!-- {% ... %} ejecuta lógica (for, if) y cada bloque se cierra con endfor / endif -->
+<!-- Fijate que el desempaquetado de tuplas (for nombre, precio in items) funciona igual que en Python -->
+<!-- methods=["POST"] indica que esa ruta acepta solo envíos de formulario -->
+<!-- request.form[...] te da los datos enviados, siempre como texto (¿te suena de input()?) -->
+<!-- redirect(url_for("inicio")) manda al navegador de vuelta a otra página; "inicio" es el nombre de la función de esa ruta -->

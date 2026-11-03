@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIENVENIDO</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('agregar_gasto') }}">Agregar Gasto</a></li>
+            <li><a href="{{ url_for('eliminar_gasto') }}">Eliminar Gasto</a></li>
+        </ul>
+    </nav>
+    {% if gastos %}
+        <h2>Gastos</h2>
+        <table>
+            <tr>
+                <th>Descripcion</th>
+                <th>Monto</th>
+                <th>Categoria</th>
+                <th>Fecha</th>
+            </tr>
+            {% for id_gasto, descripcion, monto, categoria, fecha in gastos %}
+                <tr>
+                    <td>{{ descripcion }}</td>
+                    <td>${{ monto }}</td>
+                    <td>{{ categoria }}</td>
+                    <td>{{ fecha }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <h2>Totales por Categoria</h2>
+        <ul>
+            {% for categoria, total in total_por_categoria %}
+                <li>{{ categoria }}: ${{ total }}</li>
+            {% endfor %}
+        </ul>
+
+        <h2>Total Gastado</h2>
+        <p>${{ total_gastado }}</p>
+
+    {% else %}
+        <p style="color: red;">No hay gastos ingresados aun.</p>
+    {% endif %}
+</body>
+</html>
+
+<!-- Nunca usar "| safe" ej: {{ descripcion | safe }} ya que desactiva la protección. Si no lo usás, estás seguro al mostrarlo. -->
