@@ -1,20 +1,15 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BIENVENIDO</title>
-</head>
-<body>
-    <nav>
-        <ul>
+{% extends "base.html" %}
+{% block titulo %}Gestor de Gastos{% endblock %}
+{% block contenido %}
+    <nav class="navbar">
+        <ul class="nav-links">
             <li><a href="{{ url_for('agregar_gasto') }}">Agregar Gasto</a></li>
             <li><a href="{{ url_for('eliminar_gasto') }}">Eliminar Gasto</a></li>
         </ul>
     </nav>
     {% if gastos %}
-        <h2>Gastos</h2>
-        <table>
+        <h2>Lista de Gastos</h2>
+        <table class="table">
             <tr>
                 <th>Descripcion</th>
                 <th>Monto</th>
@@ -42,9 +37,8 @@
         <p>${{ total_gastado }}</p>
 
     {% else %}
-        <p style="color: red;">No hay gastos ingresados aun.</p>
+        <p class="aviso-error">No hay gastos ingresados aun.</p>
     {% endif %}
-</body>
-</html>
+{% endblock %}
 
 <!-- Nunca usar "| safe" ej: {{ descripcion | safe }} ya que desactiva la protección. Si no lo usás, estás seguro al mostrarlo. -->

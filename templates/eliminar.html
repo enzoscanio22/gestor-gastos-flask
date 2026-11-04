@@ -1,41 +1,35 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eliminar Gasto</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block titulo %}Eliminar Gasto{% endblock %}
+{% block contenido %}
     {% if gastos %}
-        <h1>GASTOS</h1>
-        <table>
-            <tr>
-                <th>Descripcion</th>
-                <th>Monto</th>
-                <th>Categoria</th>
-                <th>Fecha</th>
-                <th></th>
-            </tr>
-            {% for id_gasto, descripcion, monto, categoria, fecha in gastos %}
+            <h1>GASTOS</h1>
+            <table class="table">
                 <tr>
-                    <td>{{ descripcion }}</td>
-                    <td>${{ monto }}</td>
-                    <td>{{ categoria }}</td>
-                    <td>{{ fecha }}</td>
-                    <td>
-                        <form action="/eliminar" method="post" style="display: inline;">
-                            <input type="hidden" name="id_gasto" value="{{ id_gasto }}">
-                            <button type="submit" onclick="return confirm('¿Seguro que querés eliminar este gasto?');" style="color: red; cursor: pointer;">Eliminar</button>
-                        </form>
-                    </td>
+                    <th>Descripcion</th>
+                    <th>Monto</th>
+                    <th>Categoria</th>
+                    <th>Fecha</th>
+                    <th></th>
                 </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p style="color: red;">No hay gastos para eliminar</p>
-    {% endif %}
+                {% for id_gasto, descripcion, monto, categoria, fecha in gastos %}
+                    <tr>
+                        <td>{{ descripcion }}</td>
+                        <td>${{ monto }}</td>
+                        <td>{{ categoria }}</td>
+                        <td>{{ fecha }}</td>
+                        <td>
+                            <form action="/eliminar" method="post" style="display: inline;">
+                                <input type="hidden" name="id_gasto" value="{{ id_gasto }}">
+                                <button type="submit" onclick="return confirm('¿Seguro que querés eliminar este gasto?');" class="btn-eliminar">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p class="aviso-error">No hay gastos para eliminar</p>
+        {% endif %}
 
-    <p><a href="{{ url_for('inicio') }}">Volver al Inicio</a></p>
+        <p><a href="{{ url_for('inicio') }}" class="btn-regresar">Volver al Inicio</a></p>
 
-</body>
-</html>
+{% endblock %}

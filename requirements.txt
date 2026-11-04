@@ -32,3 +32,8 @@ flask
 ## funciones
 ## datos
 ## rutas
+
+# ==========================================
+# Links interesantes de claude
+
+# https://www.youtube.com/watch?v=ZBrptdxnEzU

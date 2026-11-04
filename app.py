@@ -76,11 +76,6 @@ def eliminar_gasto():
 if __name__ == "__main__":
     app.run(debug = True)
 
-# @app.route("/productos")
-# def productos():
-#     lista = [("Mouse", 500), ("Teclado", 1200)]
-#     return render_template("productos.html", items = lista, cantidad = len(lista))
-
 # methods=["POST"] indica que esa ruta acepta solo envíos de formulario
 # request.form[...] te da los datos enviados, siempre como texto (¿te suena de input()?)
 # redirect(url_for("inicio")) manda al navegador de vuelta a otra página; "inicio" es el nombre de la función de esa ruta

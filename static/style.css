@@ -1,0 +1,169 @@
+body {
+    font-family: "Roboto", sans-serif;
+    margin: 2rem;
+}
+
+h1 {color: #2c3e50;}
+
+h2 {color: #2c3e50;}
+
+/* Estilos de la barra de navegación */
+.navbar {
+    background-color: #1a1a2e;
+    display: flex;                                /* Hace que los elementos se posicionen de forma horizontal automáticamente sin usar configuraciones antiguas y complejas */
+    justify-content: space-between;               /* Separa el logo de los enlaces */
+    align-items: center;                          /* Centra verticalmente los elementos */
+    padding: 2px 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);   /* Sombra sutil inferior */
+}
+
+/* Contenedor de los enlaces */
+.nav-links {
+    list-style: none;         /* Quita los puntos de la lista (ul) */
+    display: flex;            /* Pone los li uno al lado del otro */
+    align-items: center;
+}
+/* Separa los links del navbar */
+.nav-links li {
+    margin-left: 20px;
+}
+
+/* Estilo de los enlaces individuales */
+.nav-links a {
+    color: #e2e2e2;
+    text-decoration: none;          /* Quita el subrayado */
+    font-size: 16px;
+    transition: color 0.3s ease;    /* Transición suave al pasar el mouse */
+}
+
+/* Efecto Hover (cuando pasas el mouse por encima) */
+.nav-links a:hover {
+    color: #4e85cc;
+}
+
+.nav-links .nav-btn:hover {
+    background-color: #fff;
+    color: #1a1a2e;
+}
+
+/* Contenedor principal de la tabla */
+.table {
+  border-collapse: collapse;        /* Une los bordes dobles en uno solo */
+  width: 25%;                       /* Hace que ocupe todo el ancho */
+  font-family: sans-serif;          /* Cambia la tipografía a una más limpia */
+}
+
+/* Estilo general para todas las celdas */
+.table th, .table td {
+  border: 1px solid #e2e8f0;      /* Borde de 1px, línea continua, color gris claro */
+  padding: 12px 15px;               /* Espaciado interno: 12px arriba/abajo, 15px a los lados */  
+}
+
+/* Estilo exclusivo para el bloque de arriba (Encabezado) */
+.table th {
+  background-color: #0f172a;      /* Color de fondo */
+  color: white;                   /* Color del texto (blanco) */  
+  font-size: 14px;                  /* Tamaño del fondo */
+}
+
+/* Color intercalado en las filas para que sea más fácil de leer */
+.table tr:nth-child(even) {
+    background-color: #e5f0fc;
+}
+
+/* Contenedor general del formulario */
+.form-container {
+    max-width: 400px;            /* Limita el ancho para que no se estire demasiado */
+    margin: 0 auto;              /* Lo centra en la pantalla */
+    font-family: sans-serif;
+}
+
+/* Estilo para los títulos de los campos */
+.form-container label {
+  display: block;               /* Hace que el título se coloque ARRIBA del input */
+  margin-bottom: 6px;           /* Separa el título de su respectivo input */
+  color: #334155;
+  font-weight: bold;            /* Texto seminegrita */
+  font-size: 14px;
+}
+
+/* Estilo general para todos los campos de entrada */
+.form-container input[type="text"],
+.form-container input[type="number"],
+.form-container input[type="date"],
+.form-container textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 20px;              /* Separa este input del siguiente elemento hacia abajo */
+  border: 1px solid #cbd5e1;
+  border-radius: 3px;
+  box-sizing: border-box;           /* Evita que el padding deforme el ancho total */
+  font-size: 16px;
+}
+
+/* Efecto visual cuando el usuario hace clic para escribir (Focus) */
+.form-container input:focus,
+.form-container textarea:focus {
+  border-color: #3b82f6;                /* El borde cambia a azul */
+  box-shadow: 0 0 0 3px #dbeafe;        /* Agrega un sutil brillo celeste alrededor */
+}
+
+/* Botón de enviar */
+.form-container button {
+  width: 100%;
+  padding: 12px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-weight: bold;
+  cursor: pointer;                    /* Cambia el cursor a la manito */
+}
+
+/* Efecto al pasar el mouse por encima del botón */
+.form-container button:hover {
+  background-color: #2563eb;   /* Azul más oscuro */
+}
+
+/* Boton de Volver al Inicio */
+.btn-regresar {
+  display: inline-block;         /* Permite asignarle márgenes y espaciados */
+  text-decoration: none;         /* Le quita el subrayado feo por defecto */
+  background-color: #64748b;
+  color: white;
+  padding: 10px 20px;            /* Espaciado interno (alto y ancho) */
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background 0.2s;   /* Hace que el cambio de color sea suave */
+}
+
+/* Efecto al pasar el mouse de boton de Volver al Inicio*/
+.btn-regresar:hover {
+  background-color: #475569;   /* Un gris más oscuro */
+}
+
+/* Boton de Volver al Inicio */
+.btn-eliminar {
+  display: inline-block;
+  text-decoration: none;         /* Le quita el subrayado feo por defecto */
+  background-color: #d1503a;
+  color: white;
+  padding: 10px 15px;            /* Espaciado interno (alto y ancho) */
+  border-radius: 2px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;   /* Hace que el cambio de color sea suave */
+}
+
+/* Efecto al pasar el mouse de boton de Volver al Inicio*/
+.btn-eliminar:hover {
+  background-color: #e25f48;   /* Un gris más oscuro */
+}
+
+.aviso-error {
+    padding: 0.5rem;
+    color: red;
+    font-weight: 100%;
+}

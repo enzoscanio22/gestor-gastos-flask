@@ -1,32 +1,29 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Gasto</title>
-</head>
-<body>
-    <form action="/agregar" method="post">
-        <label>Descripcion:</label>
-        <input type="text" name="descripcion" value="{{ descripcion }}" placeholder="Ej. Pizza con aceituna" required>
+{% extends "base.html" %}
+{% block titulo %}Agregar Gasto{% endblock %}
+{% block contenido %}
+    <div class="form-container">
+        <form action="/agregar" method="post">
+            <label>Descripcion:</label>
+            <input type="text" name="descripcion" value="{{ descripcion }}" placeholder="Ej. Pizza con aceituna" required>
 
-        <label>Monto:</label>
-        <input type="number" name="monto" value="{{ monto }}" placeholder="Ej. 2000" required>
+            <label>Monto:</label>
+            <input type="number" name="monto" value="{{ monto }}" placeholder="Ej. 2000" required>
 
-        <label>Categoria:</label>
-        <input type="text" name="categoria" value="{{ categoria }}" placeholder="Ej. Comida" required>
+            <label>Categoria:</label>
+            <input type="text" name="categoria" value="{{ categoria }}" placeholder="Ej. Comida" required>
 
-        <label>Fecha:</label>
-        <input type="date" name="fecha" value="{{ fecha }}" placeholder="Ej. AAAA-MM-DD" required>
+            <label>Fecha:</label>
+            <input type="date" name="fecha" value="{{ fecha }}" placeholder="Ej. AAAA-MM-DD" required>
 
-        <button type="submit">Guardar</button>
+            <button type="submit">Guardar</button>
 
-        {% if error %}
-            <p style="color: red;">{{ error }}</p>
-        {% endif %}
-    </form>
+            {% if error %}
+                <p class="aviso-error">{{ error }}</p>
+            {% endif %}
+        </form>
 
-    <p><a href="{{ url_for('inicio') }}">Volver al Inicio</a></p>
+        <p><a href="{{ url_for('inicio') }}" class="btn-regresar">Volver al Inicio</a></p>
 
-</body>
-</html>
+    </div>
+    
+{% endblock %}
