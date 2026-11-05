@@ -13,3 +13,6 @@ venv/
 
 ## Archivos de configuracion local
 .env
+
+## Archivo personal
+guia-personal.md

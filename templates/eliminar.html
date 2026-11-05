@@ -14,13 +14,13 @@
                 {% for id_gasto, descripcion, monto, categoria, fecha in gastos %}
                     <tr>
                         <td>{{ descripcion }}</td>
-                        <td>${{ monto }}</td>
+                        <td>${{ monto | formato_numerico_html }}</td>
                         <td>{{ categoria }}</td>
                         <td>{{ fecha }}</td>
                         <td>
                             <form action="/eliminar" method="post" style="display: inline;">
                                 <input type="hidden" name="id_gasto" value="{{ id_gasto }}">
-                                <button type="submit" onclick="return confirm('¿Seguro que querés eliminar este gasto?');" class="btn-eliminar">Eliminar</button>
+                                <button type="submit" class="btn-eliminar" onclick="return confirm('¿Seguro que querés eliminar este gasto?');">Eliminar</button>
                             </form>
                         </td>
                     </tr>

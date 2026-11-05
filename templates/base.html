@@ -4,9 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block titulo %}Mi Pagina Web{% endblock %}</title>
-</head>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
 <body>
+    <nav class="navbar">
+        <ul class="nav-links">
+            <li><a href="{{ url_for('inicio') }}">Inicio</a></li>
+            <li><a href="{{ url_for('agregar_gasto') }}">Agregar Gasto</a></li>
+            <li><a href="{{ url_for('eliminar_gasto') }}">Eliminar Gasto</a></li>
+        </ul>
+    </nav>
+
     {% block contenido %}{% endblock %}
+
 </body>
 </html>

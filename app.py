@@ -21,6 +21,13 @@ def inicio():
         total_por_categoria = total_por_categoria
     )
 
+@app.template_filter("formato_numerico_html")
+def filtro_formato_numerico_html(value):
+    try:
+        return f"{int(value):,}".replace(",", ".")
+    except (ValueError, TypeError):
+        return value
+
 @app.route("/agregar", methods = ["GET", "POST"])
 def agregar_gasto():
     error = None
@@ -75,8 +82,3 @@ def eliminar_gasto():
 
 if __name__ == "__main__":
     app.run(debug = True)
-
-# methods=["POST"] indica que esa ruta acepta solo envíos de formulario
-# request.form[...] te da los datos enviados, siempre como texto (¿te suena de input()?)
-# redirect(url_for("inicio")) manda al navegador de vuelta a otra página; "inicio" es el nombre de la función de esa ruta
-# con html importado cuando uso html.escape() esto devuelve el texto y se vuelve 100% inofensivo para cualquier base de datos o página web que lo consulte después evitando inyección HTML o XSS (Cross-Site Scripting)

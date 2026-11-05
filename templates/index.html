@@ -1,12 +1,6 @@
 {% extends "base.html" %}
 {% block titulo %}Gestor de Gastos{% endblock %}
 {% block contenido %}
-    <nav class="navbar">
-        <ul class="nav-links">
-            <li><a href="{{ url_for('agregar_gasto') }}">Agregar Gasto</a></li>
-            <li><a href="{{ url_for('eliminar_gasto') }}">Eliminar Gasto</a></li>
-        </ul>
-    </nav>
     {% if gastos %}
         <h2>Lista de Gastos</h2>
         <table class="table">
@@ -19,7 +13,7 @@
             {% for id_gasto, descripcion, monto, categoria, fecha in gastos %}
                 <tr>
                     <td>{{ descripcion }}</td>
-                    <td>${{ monto }}</td>
+                    <td>${{ monto | formato_numerico_html }}</td>
                     <td>{{ categoria }}</td>
                     <td>{{ fecha }}</td>
                 </tr>
@@ -29,12 +23,12 @@
         <h2>Totales por Categoria</h2>
         <ul>
             {% for categoria, total in total_por_categoria %}
-                <li>{{ categoria }}: ${{ total }}</li>
+                <li>{{ categoria }}: ${{ total | formato_numerico_html }}</li>
             {% endfor %}
         </ul>
 
         <h2>Total Gastado</h2>
-        <p>${{ total_gastado }}</p>
+        <p>${{ total_gastado | formato_numerico_html }}</p>
 
     {% else %}
         <p class="aviso-error">No hay gastos ingresados aun.</p>

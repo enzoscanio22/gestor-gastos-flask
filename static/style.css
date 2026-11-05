@@ -1,11 +1,17 @@
+:root {
+  /* Colores principales */
+  --color_titulo: #2c3e50;
+
+  /* Tipografias */
+  --fuente_principal: "Roboto", sans-serif;
+}
+
 body {
-    font-family: "Roboto", sans-serif;
+    font-family: var(--fuente_principal);
     margin: 2rem;
 }
 
-h1 {color: #2c3e50;}
-
-h2 {color: #2c3e50;}
+h1, h2 { color: var(--color_titulo); }
 
 /* Estilos de la barra de navegación */
 .navbar {
@@ -41,7 +47,7 @@ h2 {color: #2c3e50;}
     color: #4e85cc;
 }
 
-.nav-links .nav-btn:hover {
+.nav-links .nav-btn:hover{
     background-color: #fff;
     color: #1a1a2e;
 }
@@ -49,8 +55,8 @@ h2 {color: #2c3e50;}
 /* Contenedor principal de la tabla */
 .table {
   border-collapse: collapse;        /* Une los bordes dobles en uno solo */
-  width: 25%;                       /* Hace que ocupe todo el ancho */
-  font-family: sans-serif;          /* Cambia la tipografía a una más limpia */
+  width: auto;                       /* Hace que ocupe el ancho de forma automatica*/
+  font-family: var(--fuente_principal);          /* Cambia la tipografía a una más limpia */
 }
 
 /* Estilo general para todas las celdas */
@@ -74,8 +80,8 @@ h2 {color: #2c3e50;}
 /* Contenedor general del formulario */
 .form-container {
     max-width: 400px;            /* Limita el ancho para que no se estire demasiado */
-    margin: 0 auto;              /* Lo centra en la pantalla */
-    font-family: sans-serif;
+    margin: 40px auto;              /* Lo centra en la pantalla */
+    font-family: var(--fuente_principal);
 }
 
 /* Estilo para los títulos de los campos */
@@ -143,27 +149,29 @@ h2 {color: #2c3e50;}
   background-color: #475569;   /* Un gris más oscuro */
 }
 
-/* Boton de Volver al Inicio */
+/* Boton de eliminar gasto */
 .btn-eliminar {
   display: inline-block;
   text-decoration: none;         /* Le quita el subrayado feo por defecto */
   background-color: #d1503a;
   color: white;
   padding: 10px 15px;            /* Espaciado interno (alto y ancho) */
+  border: none;
   border-radius: 2px;
   font-weight: 500;
   font-size: 14px;
+  font-family: var(--fuente_principal);
   cursor: pointer;
   transition: background 0.2s;   /* Hace que el cambio de color sea suave */
 }
 
-/* Efecto al pasar el mouse de boton de Volver al Inicio*/
-.btn-eliminar:hover {
+/* Efecto al pasar el mouse de boton de eliminar gasto*/
+.btn-eliminar {
   background-color: #e25f48;   /* Un gris más oscuro */
 }
 
 .aviso-error {
     padding: 0.5rem;
     color: red;
-    font-weight: 100%;
+    font-weight: bold;
 }

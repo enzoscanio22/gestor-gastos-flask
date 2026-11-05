@@ -53,7 +53,7 @@ def agregar_gasto(descripcion, monto, categoria, fecha):
         
         # Validar fecha
         try:
-            fecha = datetime.strptime(fecha, "%Y-%m-%d").date().isoformat() # .date() hace que solo me devuelva la fecha sin la hora y isoformat() hace que vuelva a convertir la fecha a cadena de texto asi se agrega a la base de datos luego de la validacion
+            fecha = datetime.strptime(fecha, "%Y-%m-%d").date().isoformat()
         except (ValueError, TypeError):
             raise ValueError("La fecha debe tener el formato AAAA-MM-DD.")
 
