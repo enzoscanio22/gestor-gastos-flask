@@ -23,7 +23,7 @@
         <h2>Totales por Categoria</h2>
         <ul>
             {% for categoria, total in total_por_categoria %}
-                <li>{{ categoria }}: ${{ total | formato_numerico_html }}</li>
+                <li><span class="categoria-totales-por-categoria">{{ categoria }}</span>: ${{ total | formato_numerico_html }}</li>
             {% endfor %}
         </ul>
 

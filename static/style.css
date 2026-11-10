@@ -3,7 +3,8 @@
   --color_titulo: #2c3e50;
 
   /* Tipografias */
-  --fuente_principal: "Roboto", sans-serif;
+  /* --fuente_principal: "Roboto", sans-serif; */
+  --fuente_principal: "Xmind", sans-serif;
 }
 
 body {
@@ -75,6 +76,12 @@ h1, h2 { color: var(--color_titulo); }
 /* Color intercalado en las filas para que sea más fácil de leer */
 .table tr:nth-child(even) {
     background-color: #e5f0fc;
+}
+
+/* Color de la categoria en el apartado Totales por Categoria */
+.categoria-totales-por-categoria {
+  font-weight: 700;
+  color: var(--color_titulo);
 }
 
 /* Contenedor general del formulario */
