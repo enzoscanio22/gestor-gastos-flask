@@ -32,11 +32,11 @@ Capturas de las diferentes secciones de la aplicación.
 
 ![Página principal](screenshots/inicio.png)
 
-Formulario para agregar gastos
+- Formulario para agregar gastos
 
 ![Página para agregar gastos](screenshots/agregar_gasto.png)
 
-Página para eliminar gastos
+- Página para eliminar gastos
 
 ![Página para eliminar gastos](screenshots/eliminar_gasto.png)
 
@@ -44,21 +44,23 @@ Página para eliminar gastos
 
 Para ejecutar este proyecto de manera local, es necesario tener instalado Python.
 
+La versión de Python 3.13.5 es en la que se creo el proyecto.
+
 ### 1. Clonar el repositorio
 
 Clonar el repositorio desde GitHub:
 
 ```bash
-git clone URL_DEL_REPOSITORIO
+git clone https://github.com/enzoscanio22/gestor-gastos-flask.git
 ```
 
 Ingresar a la carpeta del proyecto:
 
 ```bash
-cd NOMBRE_DEL_PROYECTO
+cd gestor-gastos-flask
 ```
 
-### 3. Instalar las dependencias
+### 2. Instalar las dependencias
 
 Instalar las dependencias necesarias para ejecutar la aplicación:
 
@@ -66,7 +68,7 @@ Instalar las dependencias necesarias para ejecutar la aplicación:
 pip install -r requirements.txt
 ```
 
-### 4. Ejecutar la aplicación
+### 3. Ejecutar la aplicación
 
 Iniciar el servidor de desarrollo de Flask:
 
@@ -82,23 +84,25 @@ http://127.0.0.1:5000
 
 ¡Listo! La aplicación estará funcionando localmente.
 
-### 5. Base de datos (SQLITE)
+### 4. Base de datos (SQLITE)
 
-Una vez iniciada la aplicación, se creara la base de datos vacía llamada "gastos.db"
+Una vez iniciada la aplicación, se creará la base de datos vacía llamada "gastos.db"
 
 ## Estructura del proyecto
 
 La estructura general del proyecto se organiza de la siguiente manera:
 
 ```text
-gestor_gastos_web/
+gestor_gastos_flask/
 │
-├── templates/          # Plantillas HTML
+├── screenshots/        # Screenshots de como se ve el proyecto
 ├── static/             # Archivos CSS y recursos estáticos
+├── templates/          # Plantillas HTML
+├── .gitignore          # Archivos o carpetas que Github ignora
 ├── app.py              # Aplicación principal de Flask
 ├── requirements.txt    # Dependencias del proyecto
 ├── README.md           # Documentación del proyecto
-└── database.py         # Logica de la Base de datos SQLite
+└── database.py         # Lógica de la Base de datos SQLite
 ```
 
 ## Objetivo del proyecto
