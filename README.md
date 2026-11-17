@@ -126,6 +126,6 @@ Este proyecto fue desarrollado con fines educativos y de aprendizaje, con el pro
 
 ## Autor
 
-Desarrollado por **Enzo**.
+Desarrollado por **Enzo Scanio**.
 
 Proyecto personal realizado con fines de aprendizaje.
