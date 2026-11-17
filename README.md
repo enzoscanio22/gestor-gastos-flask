@@ -28,15 +28,15 @@ Para el desarrollo de este proyecto se utilizaron las siguientes tecnologías:
 
 Capturas de las diferentes secciones de la aplicación.
 
-- Página principal
+### Página principal
 
 ![Página principal](screenshots/inicio.png)
 
-- Formulario para agregar gastos
+### Formulario para agregar gastos
 
 ![Página para agregar gastos](screenshots/agregar_gasto.png)
 
-- Página para eliminar gastos
+### Página para eliminar gastos
 
 ![Página para eliminar gastos](screenshots/eliminar_gasto.png)
 
@@ -62,7 +62,21 @@ cd gestor-gastos-flask
 
 ### 2. Instalar las dependencias
 
-Instalar las dependencias necesarias para ejecutar la aplicación:
+Instalar las dependencias necesarias en un entorno virtual para ejecutar la aplicación:
+
+Crear entorno virtual
+
+```bash
+python -m venv venv
+```
+
+Activar entorno virtual
+
+```bash
+.\venv\Scripts\Activate.ps1
+```
+
+Instalar dependencias necesarias dentro del entorno virtual
 
 ```bash
 pip install -r requirements.txt
@@ -98,6 +112,7 @@ gestor_gastos_flask/
 ├── screenshots/        # Screenshots de como se ve el proyecto
 ├── static/             # Archivos CSS y recursos estáticos
 ├── templates/          # Plantillas HTML
+├── venv/               # Entorno virtual
 ├── .gitignore          # Archivos o carpetas que Github ignora
 ├── app.py              # Aplicación principal de Flask
 ├── requirements.txt    # Dependencias del proyecto
