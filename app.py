@@ -5,6 +5,8 @@ import html
 import database as db
 
 app = Flask(__name__)
+
+## Creación de la base de datos (Comentar esta linea de codigo cuando se quiera hacer una migracion de una base de datos)
 db.crear_tabla()
 
 @app.route("/")

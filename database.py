@@ -3,22 +3,30 @@ from datetime import datetime
 
 def conectar_db():
     conexion = sqlite3.connect("gastos.db")
+    conexion.execute("PRAGMA foreign_keys = ON")
     cursor = conexion.cursor()
 
     return conexion, cursor
-
 
 def crear_tabla():
     conexion, cursor = conectar_db()
 
     try:
         cursor.execute("""
+            CREATE TABLE IF NOT EXISTS categorias (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                nombre TEXT NOT NULL UNIQUE
+            )
+        """)
+
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS gastos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 descripcion TEXT NOT NULL,
                 monto INTEGER NOT NULL,
-                categoria TEXT NOT NULL,
-                fecha TEXT NOT NULL
+                categoria_id INTEGER NOT NULL,
+                fecha TEXT NOT NULL,
+                FOREIGN KEY (categoria_id) REFERENCES categorias(id)
             )
         """)
 
@@ -58,10 +66,32 @@ def agregar_gasto(descripcion, monto, categoria, fecha):
             raise ValueError("La fecha debe tener el formato AAAA-MM-DD.")
 
         # Insertar en la base de datos
-        cursor.execute(
-            "INSERT INTO gastos (descripcion, monto, categoria, fecha) VALUES (?, ?, ?, ?)",
-            (descripcion, monto, categoria, fecha)
-        )
+        try:
+            cursor.execute("""
+                INSERT OR IGNORE INTO categorias (nombre)
+                VALUES (?)
+            """, (categoria,))
+
+            cursor.execute("""
+                SELECT id FROM categorias
+                WHERE nombre = ?
+            """, (categoria,))
+
+            resultado = cursor.fetchone()
+
+            if resultado is None:
+                raise ValueError("No se encontró la categoría")
+
+            categoria_id = resultado[0]
+
+            cursor.execute("""
+                INSERT INTO gastos (descripcion, monto, categoria_id, fecha)
+                VALUES (?, ?, ?, ?)
+            """, (descripcion, monto, categoria_id, fecha))
+
+        except sqlite3.Error as e:
+            conexion.rollback()
+            raise RuntimeError(f"Error al insertar gasto: {e}") from e
 
         conexion.commit()
         return True
@@ -73,7 +103,13 @@ def obtener_gastos():
     conexion, cursor = conectar_db()
 
     try:
-        cursor.execute("SELECT * FROM gastos")
+        cursor.execute("""
+            SELECT g.descripcion, g.monto, c.nombre, g.fecha
+            FROM gastos g
+            INNER JOIN categorias c
+            ON g.categoria_id = c.id
+        """)
+
         filas_de_gastos = cursor.fetchall()
 
         return filas_de_gastos
@@ -100,7 +136,15 @@ def obtener_por_categoria():
     conexion, cursor = conectar_db()
 
     try:
-        cursor.execute("SELECT categoria, SUM(monto) FROM gastos GROUP BY categoria")
+        cursor.execute("""
+            SELECT c.nombre AS categoria, COALESCE(SUM(g.monto), 0) AS total
+            FROM categorias c
+            LEFT JOIN gastos g
+            ON c.id = g.categoria_id
+            GROUP BY c.id, c.nombre
+            ORDER BY c.nombre
+        """)
+
         total_por_categoria = cursor.fetchall()
 
         return total_por_categoria
@@ -122,3 +166,102 @@ def eliminar_gasto(id_gasto):
     
     finally:
         conexion.close()
+
+def migrar_base_datos():
+    conexion, cursor = conectar_db()
+
+    try:
+        # Iniciar transacción
+        cursor.execute("BEGIN")
+
+        # 1. Renombrar tabla vieja
+        cursor.execute("""
+            ALTER TABLE gastos
+            RENAME TO gastos_viejos
+        """)
+
+        # 2. Crear tabla categorias
+        cursor.execute("""
+            CREATE TABLE categorias (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                nombre TEXT NOT NULL UNIQUE
+            )
+        """)
+
+        # 3. Crear tabla de gastos
+        cursor.execute("""
+            CREATE TABLE gastos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                descripcion TEXT NOT NULL,
+                monto INTEGER NOT NULL,
+                categoria_id INTEGER NOT NULL,
+                fecha TEXT NOT NULL,
+                FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+            )
+        """)
+
+        # 4. Migrar categorias sin repetirlas
+        cursor.execute("""
+            INSERT INTO categorias (nombre)
+            SELECT DISTINCT TRIM(categoria)
+            FROM gastos_viejos
+            WHERE categoria IS NOT NULL
+            AND TRIM(categoria) != ''
+        """)
+
+        # 5. Migrar los gastos recuperando el nuevo categoria_id
+        cursor.execute("""
+            INSERT INTO gastos (
+                id,
+                descripcion,
+                monto,
+                categoria_id,
+                fecha
+            )
+            SELECT
+                gv.id,
+                gv.descripcion,
+                gv.monto,
+                c.id,
+                gv.fecha
+            FROM gastos_viejos gv
+            INNER JOIN categorias c
+            ON TRIM(gv.categoria) = c.nombre
+        """)
+
+        # 6. Comprobación de que no se hayan perdido registros
+        cursor.execute("SELECT COUNT(*) FROM gastos_viejos")
+        cantidad_vieja = cursor.fetchone()[0]
+
+        cursor.execute("SELECT COUNT(*) FROM gastos")
+        cantidad_nueva = cursor.fetchone()[0]
+
+        if cantidad_vieja != cantidad_nueva:
+            raise ValueError("La cantidad de gastos migrados no coincide.")
+
+        # 7. Confirmación de cambios
+        conexion.commit()
+        return True
+
+    except Exception:
+        conexion.rollback()
+        raise
+
+    finally:
+        conexion.close()
+
+def eliminar_tabla():
+    conexion, cursor = conectar_db()
+
+    try:
+        cursor.execute("DROP TABLE IF EXISTS gastos_viejos")
+
+        conexion.commit()
+
+    except sqlite3.Error as e:
+        conexion.rollback()
+        raise RuntimeError("Error al eliminar la tabla: {e}") from e
+
+    finally:
+        conexion.close()
+

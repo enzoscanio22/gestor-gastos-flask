@@ -115,9 +115,11 @@ gestor_gastos_flask/
 ├── venv/               # Entorno virtual
 ├── .gitignore          # Archivos o carpetas que Github ignora
 ├── app.py              # Aplicación principal de Flask
-├── requirements.txt    # Dependencias del proyecto
+├── database.py         # Lógica de la Base de datos SQLite
+├── limpiar_db.py       # Script para eliminar tablas de la base de datos
+├── migracion_db.py     # Script para hacer una migración de la base de datos
 ├── README.md           # Documentación del proyecto
-└── database.py         # Lógica de la Base de datos SQLite
+└── requirements.txt    # Dependencias del proyecto
 ```
 
 ## Objetivo del proyecto
