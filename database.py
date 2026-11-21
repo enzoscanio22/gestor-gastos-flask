@@ -35,66 +35,77 @@ def crear_tabla():
     finally:
         conexion.close()
 
-def agregar_gasto(descripcion, monto, categoria, fecha):
-    conexion, cursor = conectar_db()
+def validacion_de_datos(descripcion, monto, categoria, fecha):
 
+    # Validar descripción
+    descripcion = descripcion.strip().capitalize()
+
+    if not descripcion:
+        raise ValueError("La descripción no puede estar vacía.")
+
+    # Validar monto
     try:
-        # Validar descripción
-        descripcion = descripcion.strip().capitalize()
+        monto = int(monto)
+    except (TypeError, ValueError) as error:
+        raise ValueError("El monto debe ser un entero positivo.") from error
+    
+    if monto <= 0:
+        raise ValueError("El monto debe ser mayor que cero.")
 
-        if not descripcion:
-            raise ValueError("La descripción no puede estar vacía.")
+    # Validar categoría
+    categoria = categoria.strip().capitalize()
 
-        # Validar monto
-        try:
-            monto = int(monto)
-            if monto <= 0:
-                raise ValueError("El monto debe ser mayor que cero.")
-        except (TypeError, ValueError) as error:
-            raise ValueError("El monto debe ser un entero positivo.") from error
+    if not categoria:
+        raise ValueError("La categoría no puede estar vacía.")
+    
+    # Validar fecha
+    try:
+        fecha = datetime.strptime(fecha, "%Y-%m-%d").date().isoformat()
 
-        # Validar categoría
-        categoria = categoria.strip().capitalize()
+    except (ValueError, TypeError):
+        raise ValueError("La fecha debe tener el formato AAAA-MM-DD.")
 
-        if not categoria:
-            raise ValueError("La categoría no puede estar vacía.")
-        
-        # Validar fecha
-        try:
-            fecha = datetime.strptime(fecha, "%Y-%m-%d").date().isoformat()
-        except (ValueError, TypeError):
-            raise ValueError("La fecha debe tener el formato AAAA-MM-DD.")
+    return descripcion, monto, categoria, fecha
 
-        # Insertar en la base de datos
-        try:
-            cursor.execute("""
-                INSERT OR IGNORE INTO categorias (nombre)
-                VALUES (?)
-            """, (categoria,))
+def insertar_categoria_a_la_tabla(categoria, cursor):
 
-            cursor.execute("""
-                SELECT id FROM categorias
-                WHERE nombre = ?
-            """, (categoria,))
+    cursor.execute("""
+        INSERT OR IGNORE INTO categorias (nombre)
+        VALUES (?)
+    """, (categoria,))
+    
+    cursor.execute("""
+        SELECT id FROM categorias
+        WHERE nombre = ?
+    """, (categoria,))
 
-            resultado = cursor.fetchone()
+    resultado = cursor.fetchone()
 
-            if resultado is None:
-                raise ValueError("No se encontró la categoría")
+    if resultado is None:
+        raise ValueError("No se encontró la categoría.")
 
-            categoria_id = resultado[0]
+    categoria_id = resultado[0]
+    return categoria_id
 
-            cursor.execute("""
-                INSERT INTO gastos (descripcion, monto, categoria_id, fecha)
-                VALUES (?, ?, ?, ?)
-            """, (descripcion, monto, categoria_id, fecha))
 
-        except sqlite3.Error as e:
-            conexion.rollback()
-            raise RuntimeError(f"Error al insertar gasto: {e}") from e
+def agregar_gasto(descripcion, monto, categoria, fecha):
+    descripcion, monto, categoria, fecha = validacion_de_datos(descripcion, monto, categoria, fecha)
+    conexion, cursor = conectar_db()
+    
+    try:
+        categoria_id = insertar_categoria_a_la_tabla(categoria, cursor)
+
+        cursor.execute("""
+            INSERT INTO gastos (descripcion, monto, categoria_id, fecha)
+            VALUES (?, ?, ?, ?)
+        """, (descripcion, monto, categoria_id, fecha))
 
         conexion.commit()
         return True
+
+    except sqlite3.Error as error:
+        conexion.rollback()
+        raise RuntimeError(f"Error al insertar gasto: {error}") from error
     
     finally:
         conexion.close()
@@ -104,10 +115,11 @@ def obtener_gastos():
 
     try:
         cursor.execute("""
-            SELECT g.descripcion, g.monto, c.nombre, g.fecha
+            SELECT g.id, g.descripcion, g.monto, c.nombre, g.fecha
             FROM gastos g
             INNER JOIN categorias c
             ON g.categoria_id = c.id
+            ORDER BY g.fecha
         """)
 
         filas_de_gastos = cursor.fetchall()
@@ -152,6 +164,51 @@ def obtener_por_categoria():
     finally:
         conexion.close()
 
+def obtener_gasto_por_id(id_gasto):
+    conexion, cursor = conectar_db()
+
+    try:
+        cursor.execute("""
+            SELECT g.id, g.descripcion, g.monto, c.nombre, g.fecha
+            FROM gastos g
+            INNER JOIN categorias c
+            ON g.categoria_id = c.id
+            WHERE g.id = ?
+        """, (id_gasto,))
+
+        fila_del_gasto = cursor.fetchone()
+
+        return fila_del_gasto
+
+    finally:
+        conexion.close()
+
+def actualizar(id_gasto, descripcion, monto, categoria, fecha):
+    descripcion, monto, categoria, fecha = validacion_de_datos(descripcion, monto, categoria, fecha)
+    conexion, cursor = conectar_db()
+
+    try:
+        categoria_id = insertar_categoria_a_la_tabla(categoria, cursor)
+
+        cursor.execute("""
+            UPDATE gastos
+            SET descripcion = ?, monto = ?, categoria_id = ?, fecha = ?
+            WHERE id = ?
+        """, (descripcion, monto, categoria_id, fecha, id_gasto))
+
+        if cursor.rowcount == 0:
+            raise ValueError("No se encontró el gasto.")
+
+        conexion.commit()
+        return True
+
+    except sqlite3.Error as error:
+        conexion.rollback()
+        raise RuntimeError(f"Error al actualizar gasto: {error}") from error
+
+    finally:
+        conexion.close()
+
 def eliminar_gasto(id_gasto):
     conexion, cursor = conectar_db()
 
@@ -163,6 +220,10 @@ def eliminar_gasto(id_gasto):
 
         conexion.commit()
         return True
+
+    except sqlite3.Error as error:
+        conexion.rollback()
+        raise RuntimeError(f"Error al insertar gasto: {error}") from error
     
     finally:
         conexion.close()
@@ -243,9 +304,9 @@ def migrar_base_datos():
         conexion.commit()
         return True
 
-    except Exception:
+    except sqlite3.Error as error:
         conexion.rollback()
-        raise
+        raise RuntimeError("Error al eliminar la tabla: {error}") from error
 
     finally:
         conexion.close()
@@ -258,9 +319,9 @@ def eliminar_tabla():
 
         conexion.commit()
 
-    except sqlite3.Error as e:
+    except sqlite3.Error as error:
         conexion.rollback()
-        raise RuntimeError("Error al eliminar la tabla: {e}") from e
+        raise RuntimeError(f"Error al eliminar la tabla: {error}") from error
 
     finally:
         conexion.close()

@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import render_template
 from flask import request, redirect, url_for
-import html
+from flask import abort
 import database as db
 
 app = Flask(__name__)
@@ -36,33 +36,58 @@ def agregar_gasto():
     descripcion = monto = categoria = fecha = ""
 
     if request.method == "POST":
-        descripcion = html.escape(request.form["descripcion"])
-        monto = request.form["monto"]
-        categoria = html.escape(request.form["categoria"])
-        fecha = request.form["fecha"]
+        descripcion = request.form.get("descripcion", "")
+        monto = request.form.get("monto", "")
+        categoria = request.form.get("categoria", "")
+        fecha = request.form.get("fecha", "")
 
-        if not descripcion.strip():
-            error = "La descripción es obligatoria"
-            descripcion = ""
-
-        elif float(monto) <= 0:
-            error = "El monto debe de ser un número entero mayor a cero"
-            monto = ""
-
-        elif not categoria.strip():
-            error = "La categoria es obligatoria"
-            categoria = ""
-
-        if not error:
-            try:
-                db.agregar_gasto(descripcion, monto, categoria, fecha)
-                return redirect(url_for("inicio"))
-            except ValueError as e:
-                print(f"Error: {e}")
-                error = str(e)
+        try:
+            db.agregar_gasto(descripcion, monto, categoria, fecha)
+            return redirect(url_for("inicio"))
+        
+        except ValueError as e:
+            print(f"Error: {e}")
+            error = str(e)
 
     return render_template(
         "agregar.html",
+        error = error,
+        descripcion = descripcion,
+        monto = monto,
+        categoria = categoria,
+        fecha = fecha
+    )
+
+@app.route("/editar/<int:id_gasto>", methods = ["GET", "POST"])
+def editar_gasto(id_gasto):
+    error = None
+    gasto = db.obtener_gasto_por_id(id_gasto)
+
+    if gasto is None:
+        abort(404)
+
+    descripcion = gasto[1]
+    monto = gasto[2]
+    categoria = gasto[3]
+    fecha = gasto[4]
+
+    if request.method == "POST":
+        descripcion = request.form.get("descripcion", "")
+        monto = request.form.get("monto", "")
+        categoria = request.form.get("categoria", "")
+        fecha = request.form.get("fecha", "")
+
+        try:
+            db.actualizar(id_gasto, descripcion, monto, categoria, fecha)
+            return redirect(url_for("inicio"))
+        
+        except ValueError as e:
+            print(f"Error: {e}")
+            error = str(e)
+
+    return render_template(
+        "editar.html",
+        gasto = gasto,
         error = error,
         descripcion = descripcion,
         monto = monto,

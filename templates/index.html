@@ -9,6 +9,7 @@
                 <th>Monto</th>
                 <th>Categoria</th>
                 <th>Fecha</th>
+                <th></th>
             </tr>
             {% for id_gasto, descripcion, monto, categoria, fecha in gastos %}
                 <tr>
@@ -16,6 +17,11 @@
                     <td>${{ monto | formato_numerico_html }}</td>
                     <td>{{ categoria }}</td>
                     <td>{{ fecha }}</td>
+                    <td>
+                        <form action="{{ url_for('editar_gasto', id_gasto = id_gasto) }}" method="get" style="display: inline;">
+                            <button type="submit" class="btn-editar">Editar</button>
+                        </form>
+                    </td>
                 </tr>
             {% endfor %}
         </table>

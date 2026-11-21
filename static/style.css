@@ -172,8 +172,29 @@ h1, h2 { color: var(--color_titulo); }
 }
 
 /* Efecto al pasar el mouse de boton de eliminar gasto*/
-.btn-eliminar {
-  background-color: #e25f48;   /* Un gris más oscuro */
+.btn-eliminar:hover {
+  background-color: #ce624e;   /* Un gris más oscuro */
+}
+
+/* Boton de editar gasto */
+.btn-editar {
+  display: inline-block;
+  text-decoration: none;
+  background-color: #3461b4;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 2px;
+  font-weight: 500;
+  font-size: 14px;
+  font-family: var(--fuente_principal);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+/* Efecto al pasar el mouse de boton de editar gasto*/
+.btn-editar:hover {
+  background-color: #5b95ec;
 }
 
 .aviso-error {
