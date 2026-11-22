@@ -110,17 +110,38 @@ def agregar_gasto(descripcion, monto, categoria, fecha):
     finally:
         conexion.close()
         
-def obtener_gastos():
+def obtener_gastos(categoria_id = None, desde = None, hasta = None):
     conexion, cursor = conectar_db()
 
     try:
-        cursor.execute("""
+        condiciones = []
+        parametros = []
+
+        if categoria_id:
+            condiciones.append("g.categoria_id = ?")
+            parametros.append(categoria_id)
+
+        if desde:
+            condiciones.append("g.fecha >= ?")
+            parametros.append(desde)
+
+        if hasta:
+            condiciones.append("g.fecha <= ?")
+            parametros.append(hasta)
+
+        consulta = """
             SELECT g.id, g.descripcion, g.monto, c.nombre, g.fecha
             FROM gastos g
             INNER JOIN categorias c
             ON g.categoria_id = c.id
-            ORDER BY g.fecha
-        """)
+        """
+
+        if condiciones:
+            consulta += " WHERE " + " AND ".join(condiciones)
+
+        consulta += " ORDER BY g.fecha"
+
+        cursor.execute(consulta, parametros)
 
         filas_de_gastos = cursor.fetchall()
 
@@ -164,6 +185,18 @@ def obtener_por_categoria():
     finally:
         conexion.close()
 
+def obtener_lista_de_categorias():
+    conexion, cursor = conectar_db()
+
+    try:
+        cursor.execute("SELECT id, nombre FROM categorias ORDER BY nombre")
+        lista_de_categorias = cursor.fetchall()
+
+        return lista_de_categorias
+
+    finally:
+        conexion.close()
+
 def obtener_gasto_por_id(id_gasto):
     conexion, cursor = conectar_db()
 
@@ -182,6 +215,7 @@ def obtener_gasto_por_id(id_gasto):
 
     finally:
         conexion.close()
+    
 
 def actualizar(id_gasto, descripcion, monto, categoria, fecha):
     descripcion, monto, categoria, fecha = validacion_de_datos(descripcion, monto, categoria, fecha)
@@ -206,6 +240,10 @@ def actualizar(id_gasto, descripcion, monto, categoria, fecha):
         conexion.rollback()
         raise RuntimeError(f"Error al actualizar gasto: {error}") from error
 
+    except Exception:
+        conexion.rollback()
+        raise
+
     finally:
         conexion.close()
 
@@ -223,7 +261,7 @@ def eliminar_gasto(id_gasto):
 
     except sqlite3.Error as error:
         conexion.rollback()
-        raise RuntimeError(f"Error al insertar gasto: {error}") from error
+        raise RuntimeError(f"Error al eliminar el gasto: {error}") from error
     
     finally:
         conexion.close()
@@ -306,7 +344,7 @@ def migrar_base_datos():
 
     except sqlite3.Error as error:
         conexion.rollback()
-        raise RuntimeError("Error al eliminar la tabla: {error}") from error
+        raise RuntimeError(f"Error al migrar la tabla: {error}") from error
 
     finally:
         conexion.close()

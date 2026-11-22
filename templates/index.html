@@ -26,6 +26,32 @@
             {% endfor %}
         </table>
 
+        <h2>Filtro</h2>
+        <div class="form-container-filtro">
+            <form action="/" method="get">
+                <label>Categoría:</label>
+                <select name="categoria_id">
+                    <option value="">Todas las Categorías</option>
+
+                    {% for categoria in categorias %}
+                        <option value="{{ categoria[0] }}" {% if categoria_id == categoria[0]|string %}selected{% endif %}>{{ categoria[1] }}</option>
+                    {% endfor %}
+                </select>
+
+                <label>Desde:</label>
+                <input type="date" name="desde" value="{{ desde or '' }}">
+
+                <label>Hasta:</label>
+                <input type="date" name="hasta" value="{{ hasta or '' }}">
+
+                <button type="submit" class="btn-filtrar">Filtrar</button>
+
+            </form>
+
+            <p><a href="/" class="btn-limpiar_filtros">Limpiar filtros</a></p>
+
+        </div>
+
         <h2>Totales por Categoria</h2>
         <ul>
             {% for categoria, total in total_por_categoria %}

@@ -11,16 +11,24 @@ db.crear_tabla()
 
 @app.route("/")
 def inicio():
+    categoria_id = request.args.get("categoria_id")
+    desde = request.args.get("desde")
+    hasta = request.args.get("hasta")
 
-    gastos = db.obtener_gastos()
+    gastos = db.obtener_gastos(categoria_id, desde, hasta)
     total_gastado = db.obtener_total()
     total_por_categoria = db.obtener_por_categoria()
+    categorias = db.obtener_lista_de_categorias()
 
     return render_template(
         "index.html",
         gastos = gastos,
         total_gastado = total_gastado,
-        total_por_categoria = total_por_categoria
+        total_por_categoria = total_por_categoria,
+        categorias = categorias,
+        categoria_id = categoria_id,
+        desde = desde,
+        hasta = hasta
     )
 
 @app.template_filter("formato_numerico_html")
