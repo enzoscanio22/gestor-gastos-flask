@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 {% block titulo %}Gestor de Gastos{% endblock %}
 {% block contenido %}
-    {% if gastos %}
+
+    {% if error %}
+    
+        <p class="aviso-error">{{ error }}</p>
+
+    {% elif gastos %}
         <h2>Lista de Gastos</h2>
         <table class="table">
             <tr>
@@ -45,10 +50,10 @@
                 <input type="date" name="hasta" value="{{ hasta or '' }}">
 
                 <button type="submit" class="btn-filtrar">Filtrar</button>
+                
+                <p><a href="/" class="btn-limpiar_filtros">Limpiar filtros</a></p>
 
             </form>
-
-            <p><a href="/" class="btn-limpiar_filtros">Limpiar filtros</a></p>
 
         </div>
 
@@ -61,10 +66,11 @@
 
         <h2>Total Gastado</h2>
         <p>${{ total_gastado | formato_numerico_html }}</p>
-
+    
     {% else %}
-        <p class="aviso-error">No hay gastos ingresados aun.</p>
+        <p class="aviso-error">No hay gastos ingresados aún.</p>
     {% endif %}
+
 {% endblock %}
 
 <!-- Nunca usar "| safe" ej: {{ descripcion | safe }} ya que desactiva la protección. Si no lo usás, estás seguro al mostrarlo. -->

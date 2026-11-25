@@ -87,6 +87,25 @@ def insertar_categoria_a_la_tabla(categoria, cursor):
     categoria_id = resultado[0]
     return categoria_id
 
+def construir_filtros(categoria_id = None, desde = None, hasta = None, alias = ""):
+    condiciones = []
+    parametros = []
+
+    prefijo = f"{alias}." if alias else ""
+
+    if categoria_id:
+        condiciones.append(f"{prefijo}categoria_id = ?")
+        parametros.append(categoria_id)
+
+    if desde:
+        condiciones.append(f"{prefijo}fecha >= ?")
+        parametros.append(desde)
+
+    if hasta:
+        condiciones.append(f"{prefijo}fecha <= ?")
+        parametros.append(hasta)
+
+    return condiciones, parametros
 
 def agregar_gasto(descripcion, monto, categoria, fecha):
     descripcion, monto, categoria, fecha = validacion_de_datos(descripcion, monto, categoria, fecha)
@@ -114,20 +133,11 @@ def obtener_gastos(categoria_id = None, desde = None, hasta = None):
     conexion, cursor = conectar_db()
 
     try:
-        condiciones = []
-        parametros = []
+        condiciones, parametros = construir_filtros(categoria_id, desde, hasta, alias = "g")
 
-        if categoria_id:
-            condiciones.append("g.categoria_id = ?")
-            parametros.append(categoria_id)
-
-        if desde:
-            condiciones.append("g.fecha >= ?")
-            parametros.append(desde)
-
-        if hasta:
-            condiciones.append("g.fecha <= ?")
-            parametros.append(hasta)
+        if desde is not None and hasta is not None:
+            if hasta < desde:
+                raise ValueError("La fecha final no puede ser anterior a la fecha inicial.")
 
         consulta = """
             SELECT g.id, g.descripcion, g.monto, c.nombre, g.fecha
@@ -150,11 +160,19 @@ def obtener_gastos(categoria_id = None, desde = None, hasta = None):
     finally:
         conexion.close()
 
-def obtener_total():
+def obtener_total(categoria_id = None, desde = None, hasta = None):
     conexion, cursor = conectar_db()
 
     try:
-        cursor.execute("SELECT SUM(monto) FROM gastos")
+        condiciones, parametros = construir_filtros(categoria_id, desde, hasta, alias = "g")
+
+        consulta = "SELECT COALESCE(SUM(monto), 0) FROM gastos g"
+
+        if condiciones:
+            consulta += " WHERE " + " AND ".join(condiciones)
+
+        cursor.execute(consulta, parametros)
+
         total_gastado = cursor.fetchone()[0]
 
         if total_gastado is None:
@@ -165,18 +183,28 @@ def obtener_total():
     finally:
         conexion.close()
 
-def obtener_por_categoria():
+def obtener_por_categoria(categoria_id = None, desde = None, hasta = None):
     conexion, cursor = conectar_db()
 
     try:
-        cursor.execute("""
+        condiciones, parametros = construir_filtros(categoria_id, desde, hasta, alias = "g")
+
+        consulta = """
             SELECT c.nombre AS categoria, COALESCE(SUM(g.monto), 0) AS total
             FROM categorias c
             LEFT JOIN gastos g
             ON c.id = g.categoria_id
+        """
+
+        if condiciones:
+            consulta += " WHERE " + " AND ".join(condiciones)
+
+        consulta += """
             GROUP BY c.id, c.nombre
             ORDER BY c.nombre
-        """)
+        """
+
+        cursor.execute(consulta, parametros)
 
         total_por_categoria = cursor.fetchall()
 

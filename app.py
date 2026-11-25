@@ -2,6 +2,7 @@ from flask import Flask
 from flask import render_template
 from flask import request, redirect, url_for
 from flask import abort
+from datetime import datetime
 import database as db
 
 app = Flask(__name__)
@@ -11,18 +12,39 @@ db.crear_tabla()
 
 @app.route("/")
 def inicio():
+    error = None
+    gastos = []
+
     categoria_id = request.args.get("categoria_id")
     desde = request.args.get("desde")
     hasta = request.args.get("hasta")
 
-    gastos = db.obtener_gastos(categoria_id, desde, hasta)
-    total_gastado = db.obtener_total()
-    total_por_categoria = db.obtener_por_categoria()
-    categorias = db.obtener_lista_de_categorias()
+    if categoria_id and not categoria_id.isdigit():
+        abort(400)
+
+    try:
+        if desde:
+            datetime.strptime(desde, "%Y-%m-%d")
+
+        if hasta:
+            datetime.strptime(hasta, "%Y-%m-%d")
+
+    except ValueError:
+        abort(400)
+
+    try:
+        gastos = db.obtener_gastos(categoria_id, desde, hasta)
+        total_gastado = db.obtener_total(categoria_id, desde, hasta)
+        total_por_categoria = db.obtener_por_categoria(categoria_id, desde, hasta)
+        categorias = db.obtener_lista_de_categorias()
+
+    except ValueError as e:
+        error = str(e)
 
     return render_template(
         "index.html",
         gastos = gastos,
+        error = error,
         total_gastado = total_gastado,
         total_por_categoria = total_por_categoria,
         categorias = categorias,
@@ -114,6 +136,18 @@ def eliminar_gasto():
 
     gastos = db.obtener_gastos()
     return render_template("eliminar.html", gastos = gastos)
+
+@app.errorhandler(400)
+def solicitud_incorrecta(error):
+    return render_template("400.html"), 400
+
+@app.errorhandler(404)
+def pagina_no_encontrada(error):
+    return render_template("404.html"), 404
+
+@app.errorhandler(500)
+def error_interno(error):
+    return render_template("500.html"), 500
 
 if __name__ == "__main__":
     app.run(debug = True)
