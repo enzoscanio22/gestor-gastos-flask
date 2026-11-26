@@ -7,7 +7,9 @@
         <p class="aviso-error">{{ error }}</p>
 
     {% elif gastos %}
-        <h2>Lista de Gastos</h2>
+
+         <h2>Lista de Gastos</h2>
+
         <table class="table">
             <tr>
                 <th>Descripcion</th>
@@ -31,9 +33,20 @@
             {% endfor %}
         </table>
 
-        <h2>Filtro</h2>
+    {% elif hay_gastos %}
+
+        <p class="aviso-error">No hay gastos que coincidan con los filtros seleccionados.</p>
+    
+    {% else %}
+
+        <p class="aviso-error">No hay gastos ingresados aún.</p>
+
+    {% endif %}
+
+    <h2>Filtro</h2>
+
         <div class="form-container-filtro">
-            <form action="/" method="get">
+            <form action="{{ url_for('inicio') }}" method="get">
                 <label>Categoría:</label>
                 <select name="categoria_id">
                     <option value="">Todas las Categorías</option>
@@ -51,26 +64,24 @@
 
                 <button type="submit" class="btn-filtrar">Filtrar</button>
                 
-                <p><a href="/" class="btn-limpiar_filtros">Limpiar filtros</a></p>
+                <p><a href="{{ url_for('inicio') }}" class="btn-limpiar_filtros">Limpiar filtros</a></p>
 
             </form>
 
         </div>
 
-        <h2>Totales por Categoria</h2>
-        <ul>
-            {% for categoria, total in total_por_categoria %}
-                <li><span class="categoria-totales-por-categoria">{{ categoria }}</span>: ${{ total | formato_numerico_html }}</li>
-            {% endfor %}
-        </ul>
+    <h2>Totales por Categoria</h2>
 
-        <h2>Total Gastado</h2>
-        <p>${{ total_gastado | formato_numerico_html }}</p>
+    <ul>
+        {% for categoria, total in total_por_categoria %}
+            <li><span class="categoria-totales-por-categoria">{{ categoria }}</span>: ${{ total | formato_numerico_html }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Total Gastado</h2>
+
+    <p>${{ total_gastado | formato_numerico_html }}</p>
     
-    {% else %}
-        <p class="aviso-error">No hay gastos ingresados aún.</p>
-    {% endif %}
-
 {% endblock %}
 
 <!-- Nunca usar "| safe" ej: {{ descripcion | safe }} ya que desactiva la protección. Si no lo usás, estás seguro al mostrarlo. -->

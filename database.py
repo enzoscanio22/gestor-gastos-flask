@@ -136,7 +136,10 @@ def obtener_gastos(categoria_id = None, desde = None, hasta = None):
         condiciones, parametros = construir_filtros(categoria_id, desde, hasta, alias = "g")
 
         if desde is not None and hasta is not None:
-            if hasta < desde:
+            fecha_desde = datetime.strptime(desde, "%Y-%m-%d").date()
+            fecha_hasta = datetime.strptime(hasta, "%Y-%m-%d").date()
+
+            if fecha_desde > fecha_hasta:
                 raise ValueError("La fecha final no puede ser anterior a la fecha inicial.")
 
         consulta = """

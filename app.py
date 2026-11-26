@@ -14,6 +14,9 @@ db.crear_tabla()
 def inicio():
     error = None
     gastos = []
+    total_gastado = 0
+    total_por_categoria = []
+    categorias = []
 
     categoria_id = request.args.get("categoria_id")
     desde = request.args.get("desde")
@@ -41,6 +44,10 @@ def inicio():
     except ValueError as e:
         error = str(e)
 
+    # Comprobar si existen gastos sin aplicar filtros
+    todos_los_gastos = db.obtener_gastos()
+    hay_gastos = bool(todos_los_gastos)
+
     return render_template(
         "index.html",
         gastos = gastos,
@@ -50,7 +57,8 @@ def inicio():
         categorias = categorias,
         categoria_id = categoria_id,
         desde = desde,
-        hasta = hasta
+        hasta = hasta,
+        hay_gastos = hay_gastos
     )
 
 @app.template_filter("formato_numerico_html")
@@ -151,3 +159,5 @@ def error_interno(error):
 
 if __name__ == "__main__":
     app.run(debug = True)
+
+## El debug = True nunca debe de estar activado en un servidor publico
